@@ -2,7 +2,7 @@
 // DEPENDENCIES
 // We need to include the path package to get the correct file path for our html
 // ===============================================================================
-var path = require("path");
+const path = require("path");
 
 
 // ===============================================================================
@@ -16,17 +16,17 @@ module.exports = (app) => {
     // ---------------------------------------------------------------------------
 
     // Sends the user to the notes page
-    app.get('/notes', function (req, res) {
+    app.get('/notes', (req, res) => {
 
         // Return the contents of notes.html
-        res.sendFile(path.join(__dirname, '../public/notes.html'));
+        res.sendFile(path.join(__dirname, './public/notes.html'));
     });
 
     // If no matching route is found 
-    app.get('*', function (req, res) {
+    app.get('*', (req, res) => {
 
         // Return the contents of index.html
-        res.sendFile(path.join(__dirname, '../public/index.html'));
+        res.sendFile(path.join(__dirname, './public/index.html'));
     });
 
 };

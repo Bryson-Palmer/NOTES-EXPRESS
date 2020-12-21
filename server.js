@@ -1,104 +1,46 @@
-// Dependencies
-// =============================================================
-const express = require('express');
-const fs = require('fs');
-const path = require('path');
+// ==============================================================================
+// DEPENDENCIES
+// Series of npm packages that we will use to give our server useful functionality
+// ==============================================================================
 
-// Sets up the Express App
-// =============================================================
+const express = require('express');
+
+
+// ==============================================================================
+// EXPRESS CONFIGURATION
+// This sets up the basic properties for our express server
+// ==============================================================================
+
+// Tells node that we are creating an "express" server
 const app = express();
+
+// Sets an initial port. We"ll use this later in our listener
 const PORT = process.env.PORT || 3001;
 
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Settup folder public and contents as static files
+// Set up public folder and contents as static files
 app.use(express.static('public'));
  
 
-// Routes
-// =============================================================
-
-app.get('/api/notes', function(req, res) {
-
-    // Use the fs module to read the `db.json`file
-    
-
-    // Using our `.then` to parse the file contents with JSON.parse() to the real data
-
-    
-    // Send the parsed data back to the client with res.json()
-    return res.json();
-
-});
-
-app.post('/api/notes', function(req, res) {
-
-    // Access the POSTed data in `req.body`
-    
-
-    // Use the fs module to read the `db.json`file
-    
-
-    // Using our `.then` to parse the file contents with JSON.parse() to the real data
+// ================================================================================
+// ROUTER
+// The below points our server to a series of "route" files.
+// These routes give our server a "map" of how to respond when users visit or request data from various URLs.
+// ================================================================================
 
 
-    // Push the `req.body` to the array list
-
-
-    // JSON.stringify() the array list back into a JSON string
-
-
-    // Using our `.then` save the contents back to the `db.json` with the fs module
-
-
-});
-
-app.delete('/api/notes/:id', function(req, res) {
-
-    // Access :id from `req.params.id`
-
-
-    // Use the fs module to read the `db.json`file
-    
-
-    // Using our `.then` to parse the file contents with JSON.parse() to the real data
-
-
-    // Option A
-        // Find the matching index using .findIndex()
-        // Remove the target element using .splice()
-
-    
-    // Option B
-        // Use the Array.filter() method to filter out the matching element
-        //  myArray = myArray.filter( element => element.id !== req.params.id );
-
-
-    // Return any type of sucdcess message
-
-});
-
-// Sends the user to the notes page
-app.get('/notes', function (req, res) {
-
-    // Returns the contents of the notes.html
-    res.sendFile(path.join(__dirname, '../public/notes.html'));
-
-});
-
-// If no matching route is found default to index
-app.get('*', function (req, res) {
-
-    // Returns the contents of the index.html
-    res.sendFile(path.join(__dirname, '../public/index.html'));
-
-});
+require("./routes/apiRoutes")(app);
+require("./routes/htmlRoutes")(app);
 
  
-// Starts the server to begin listening
-// =============================================================
+// =============================================================================
+// LISTENER
+// The below code effectively "starts" our server
+// =============================================================================
+
 app.listen( PORT, function() {
     console.log( 'App listening on PORT: http://localhost:' + PORT );
 });
