@@ -5,6 +5,7 @@
 const fs = require("fs");
 const path = require("path");
 const chalk = require('chalk');
+const { v4: uuidv4 } = require("uuid");
 
 const dbDir = path.resolve(__dirname, "../db/");
 
@@ -34,15 +35,19 @@ module.exports = (app) => {
 
         // Access the POSTed data in `req.body`
         let newNote = req.body;
+
+        // Assign unique id to new note
+        let noteId = uuidv4();
+        newNote["id"] = noteId;
         
         // Call read notes function, pass the response, and assign it to notes
-        let notes = readNotes(res);
+        let note = readNotes(res);
 
         // Push the new note to the array list
-        notes.push(newNote);
+        note.push(newNote);
 
         // Call add note function pass in notes
-        addNote(notes);
+        addNote(note);
 
         // Save the contents back to the `db.json` with the fs module
         return res.json(newNote);
@@ -86,10 +91,10 @@ module.exports = (app) => {
         return JSON.parse(notes);
     }
 
-    addNote = (notes) => {
+    addNote = (note) => {
 
         try{    
-            fs.writeFileSync(path.join(dbDir, "db.json"),  JSON.stringify(notes))
+            fs.writeFileSync(path.join(dbDir, "db.json"),  JSON.stringify(note))
             console.log(chalk.bgBlueBright("Success adding note!"));
         } catch (err) {
             console.error(chalk.yellowBright("Had trouble adding note " + err));
