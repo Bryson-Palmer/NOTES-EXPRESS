@@ -1,98 +1,107 @@
-// ==============================================================================
-// DEPENDENCIES
-// Series of npm packages that we will use to give our server useful functionality
-// ==============================================================================
-
-const fs = require('fs');
-
-
 // ===============================================================================
-// LOAD DATA
+// LOAD DEPENDNECIES
 // ===============================================================================
 
-const db = require("./db/db.json");
+const fs = require("fs");
+const path = require("path");
+const chalk = require('chalk');
 
+const dbDir = path.resolve(__dirname, "../db/");
 
 // ===============================================================================
 // LOAD STORE FUNCTIONS 
 // ===============================================================================
 
-const store = require("../db/store");
+// const store = require("../db/store.js");
 
 
-module.exports = function(app) {
-  // API GET Requests
-  // Below code handles when users "visit" a page.
-  // In each of the below cases when a user visits a link
-  // They are shown a JSON of the data
+
+module.exports = (app) => {
+  // API GET, POST, & DELETE Requests
+  // Below code handles when users view, add, or delete a note.
   // ---------------------------------------------------------------------------
 
-app.get('/api/notes', function(req, res) {
+    app.get("/api/notes", (req, res) => {
 
-    // Use the fs module to read the `db.json`file
-    fs.readFile("./db/db.json", 'utf8', (err, notes) => {
-        if (err) {
-            console.log("Error reading file:", err);
-            return
-        }
-        try {
-            const parsedNotes = JSON.parse(notes);
-            console.log("Saved note id is: ", savedNotes.id);
-        } catch(err) {
-                console.log("Error parsing JSON string:", err)
-            }
+        let notes = readNotes(res);
+
+        // Send the parsed data back to the client with res.json()
+        return res.json(notes);
+
     });
 
-    // Send the parsed data back to the client with res.json()
-    return res.json(parsedNotes);
+    app.post("/api/notes", function(req, res) {
 
-});
+        // Access the POSTed data in `req.body`
+        let newNote = req.body;
+        
+        // Call read notes function, pass the response, and assign it to notes
+        let notes = readNotes(res);
 
-app.post('/api/notes', function(req, res) {
+        // Push the new note to the array list
+        notes.push(newNote);
 
-    // Access the POSTed data in `req.body`
-    
+        // Call add note function pass in notes
+        addNote(notes);
 
-    // Use the fs module to read the `db.json`file
-    
+        // Save the contents back to the `db.json` with the fs module
+        return res.json(newNote);
 
-    // Using our `.then` to parse the file contents with JSON.parse() to the real data
+    });
 
+    app.delete("/api/notes/:id", function(req, res) {
 
-    // Push the `req.body` to the array list
-
-
-    // JSON.stringify() the array list back into a JSON string
-
-
-    // Using our `.then` save the contents back to the `db.json` with the fs module
-
-
-});
-
-app.delete('/api/notes/:id', function(req, res) {
-
-    // Access :id from `req.params.id`
+        // Access :id from `req.params.id`
 
 
-    // Use the fs module to read the `db.json`file
-    
+        // Use the fs module to read the `db.json`file
+        
 
-    // Using our `.then` to parse the file contents with JSON.parse() to the real data
-
-
-    // Option A
-        // Find the matching index using .findIndex()
-        // Remove the target element using .splice()
-
-    
-    // Option B
-        // Use the Array.filter() method to filter out the matching element
-        //  myArray = myArray.filter( element => element.id !== req.params.id );
+        // Using our `.then` to parse the file contents with JSON.parse() to the real data
 
 
-    // Return any type of sucdcess message
+        // Option A
+            // Find the matching index using .findIndex()
+            // Remove the target element using .splice()
 
-});
+        
+        // Option B
+            // Use the Array.filter() method to filter out the matching element
+            //  myArray = myArray.filter( element => element.id !== req.params.id );
+
+
+        // Return any type of sucdcess message
+
+    });
+
+    readNotes = (notes) => {
+
+        try{    
+            // Use the fs module to read the `db.json`file
+            notes = fs.readFileSync(path.join(dbDir, "db.json"), "utf8")
+            console.log(chalk.bgBlueBright("Success reading notes!"));
+        } catch (err) {
+            console.error(chalk.yellowBright("Had trouble reading notes " + err));
+        }
+        return JSON.parse(notes);
+    }
+
+    addNote = (notes) => {
+
+        try{    
+            fs.writeFileSync(path.join(dbDir, "db.json"),  JSON.stringify(notes))
+            console.log(chalk.bgBlueBright("Success adding note!"));
+        } catch (err) {
+            console.error(chalk.yellowBright("Had trouble adding note " + err));
+        }
+        return
+
+    }
+
+    // deleteNote() {
+
+
+
+    // }
 
 };

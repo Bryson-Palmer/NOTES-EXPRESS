@@ -4,7 +4,6 @@
 // ===============================================================================
 const path = require("path");
 
-
 // ===============================================================================
 // ROUTING
 // ===============================================================================
@@ -19,14 +18,14 @@ module.exports = (app) => {
     app.get('/notes', (req, res) => {
 
         // Return the contents of notes.html
-        res.sendFile(path.join(__dirname, './public/notes.html'));
+        res.sendFile(path.join(__dirname, '../public/notes.html'));
     });
 
     // If no matching route is found 
     app.get('*', (req, res) => {
 
         // Return the contents of index.html
-        res.sendFile(path.join(__dirname, './public/index.html'));
+        res.sendFile(path.join(__dirname, '../public/index.html'));
     });
 
 };

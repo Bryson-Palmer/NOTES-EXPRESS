@@ -3,7 +3,8 @@
 // Series of npm packages that we will use to give our server useful functionality
 // ==============================================================================
 
-const express = require('express');
+const express = require("express");
+const chalk = require("chalk");
 
 
 // ==============================================================================
@@ -17,12 +18,12 @@ const app = express();
 // Sets an initial port. We"ll use this later in our listener
 const PORT = process.env.PORT || 3001;
 
+// Set up public folder and contents as static files
+app.use(express.static("public"));
+
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-// Set up public folder and contents as static files
-app.use(express.static('public'));
  
 
 // ================================================================================
@@ -42,5 +43,5 @@ require("./routes/htmlRoutes")(app);
 // =============================================================================
 
 app.listen( PORT, function() {
-    console.log( 'App listening on PORT: http://localhost:' + PORT );
+    console.log(chalk.blueBright( "App listening on PORT: http://localhost:" + PORT ));
 });
