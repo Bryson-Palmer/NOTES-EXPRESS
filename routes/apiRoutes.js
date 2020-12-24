@@ -24,89 +24,86 @@ module.exports = (app) => {
 
     app.get("/api/notes", (req, res) => {
 
-        let notes = readNotes(res);
+        // Read database of javascript object(s) and assign to variable
+        let notes = readDb(res);
 
-        // Send the parsed data back to the client with res.json()
+        // Send a json response object of notes back to the client
         return res.json(notes);
 
     });
 
     app.post("/api/notes", function(req, res) {
 
-        // Access the POSTed data in `req.body`
+        // Access the javascript object in `req.body` and store in new variable
         let newNote = req.body;
 
         // Assign unique id to new note
         let noteId = uuidv4();
         newNote["id"] = noteId;
         
-        // Call read notes function, pass the response, and assign it to notes
-        let note = readNotes(res);
+        // Read database of javascript object(s) and assign to variable
+        let note = readDb(res);
 
         // Push the new note to the array list
         note.push(newNote);
 
-        // Call add note function pass in notes
-        addNote(note);
+        // Call write database function and pass in note
+        writeDb(note);
 
-        // Save the contents back to the `db.json` with the fs module
+        // Send a json response object of the database, with the new note, back to the client
         return res.json(newNote);
 
     });
 
     app.delete("/api/notes/:id", function(req, res) {
 
-        // Access :id from `req.params.id`
+        // Access :id from `req.params.id` and store in new variable
+        let noteId = req.params.id;
 
+        // Read database of javascript object(s) and assign to variable
+        let note = readDb(res);
 
-        // Use the fs module to read the `db.json`file
-        
+        // Find the matching index of note using .findIndex() and the id element
+        const findNoteByindexId = note.findIndex( ({id}) => id == noteId );    
 
-        // Using our `.then` to parse the file contents with JSON.parse() to the real data
+        // Remove the target element from note using .splice()
+        note.splice(findNoteByindexId, 1);
 
+        // Re-write modified array of objects to database
+        writeDb(note);
 
-        // Option A
-            // Find the matching index using .findIndex()
-            // Remove the target element using .splice()
+        // Return success message
+        console.log(chalk.bgBlueBright("Success deleting note from database!"));
 
-        
-        // Option B
-            // Use the Array.filter() method to filter out the matching element
-            //  myArray = myArray.filter( element => element.id !== req.params.id );
-
-
-        // Return any type of sucdcess message
+        // Send the modified database of notes back to the saved notes list
+        return res.json(true);
 
     });
 
-    readNotes = (notes) => {
+    readDb = (notes) => {
 
         try{    
             // Use the fs module to read the `db.json`file
             notes = fs.readFileSync(path.join(dbDir, "db.json"), "utf8")
-            console.log(chalk.bgBlueBright("Success reading notes!"));
+            console.log(chalk.bgBlueBright("Success reading database of notes!"));
         } catch (err) {
-            console.error(chalk.yellowBright("Had trouble reading notes " + err));
+            console.error(chalk.yellowBright("Had trouble reading database of notes " + err));
         }
+        // Convert string of notes to a javascript object and return back to the GET request
         return JSON.parse(notes);
     }
 
-    addNote = (note) => {
+    writeDb = (note) => {
 
         try{    
+            // Save the contents back to the `db.json` with the fs module
+            // Stringify note
             fs.writeFileSync(path.join(dbDir, "db.json"),  JSON.stringify(note))
-            console.log(chalk.bgBlueBright("Success adding note!"));
+            console.log(chalk.bgBlueBright("Success writing to the database!"));
         } catch (err) {
-            console.error(chalk.yellowBright("Had trouble adding note " + err));
+            console.error(chalk.yellowBright("Had trouble writing to the database " + err));
         }
-        return
 
     }
-
-    // deleteNote() {
-
-
-
-    // }
 
 };
