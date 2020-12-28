@@ -73,7 +73,7 @@ module.exports = (app) => {
         writeDb(note);
 
         // Return success message
-        console.log(chalk.bgBlueBright("Success deleting note from database!"));
+        console.log(chalk.bgBlue("Success deleting note from database!"));
 
         // Send the modified database of notes back to the saved notes list
         return res.json(true);
@@ -85,7 +85,7 @@ module.exports = (app) => {
         try{    
             // Use the fs module to read the `db.json`file
             notes = fs.readFileSync(path.join(dbDir, "db.json"), "utf8")
-            console.log(chalk.bgBlueBright("Success reading database of notes!"));
+            console.log(chalk.blueBright("Success reading database!"));
         } catch (err) {
             console.error(chalk.yellowBright("Had trouble reading database of notes " + err));
         }
@@ -99,7 +99,7 @@ module.exports = (app) => {
             // Save the contents back to the `db.json` with the fs module
             // Stringify note
             fs.writeFileSync(path.join(dbDir, "db.json"),  JSON.stringify(note))
-            console.log(chalk.bgBlueBright("Success writing to the database!"));
+            console.log(chalk.bgBlue("Success writing to database!"));
         } catch (err) {
             console.error(chalk.yellowBright("Had trouble writing to the database " + err));
         }
